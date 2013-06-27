@@ -19,7 +19,8 @@
 - (BOOL)validateField:(NSString *)aField ofRecord:(id)aRecord {
     NSString *recordName = [[aRecord class] description];
     id aValue = [aRecord valueForKey:aField];
-    id aId = [aRecord valueForKey:@"id"]; 
+    id aId = [aRecord valueForKey:@"id"];
+    ARLazyFetcher *fetcher = [[ARLazyFetcher alloc] initWithRecord:NSClassFromString(recordName)];
     
     ARWhereStatement * ignoreSameRecord = [ARWhereStatement whereField:@"id" ofRecord:[aRecord class] equalToValue: aId];
     ARWhereStatement * ensureUniqueField = [ARWhereStatement whereField:aField ofRecord:[aRecord class] equalToValue: aValue];
@@ -28,8 +29,8 @@
     [fetcher setWhereStatement:finalStatement];
     
     NSInteger count = [fetcher count];
-    [fetcher release];
-    if(count){
+    
+    if(count > 0){
         return NO;
     }
     return YES;
