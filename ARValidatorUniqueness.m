@@ -22,7 +22,7 @@
     id aId = [aRecord valueForKey:@"id"];
     ARLazyFetcher *fetcher = [[ARLazyFetcher alloc] initWithRecord:NSClassFromString(recordName)];
     
-    ARWhereStatement * ignoreSameRecord = [ARWhereStatement whereField:@"id" ofRecord:[aRecord class] equalToValue: aId];
+    ARWhereStatement * ignoreSameRecord = [ARWhereStatement whereField:@"id" ofRecord:[aRecord class] notEqualToValue: aId];
     ARWhereStatement * ensureUniqueField = [ARWhereStatement whereField:aField ofRecord:[aRecord class] equalToValue: aValue];
     ARWhereStatement *finalStatement = [ARWhereStatement concatenateStatement:ignoreSameRecord withStatement:ensureUniqueField useLogicalOperation:ARLogicalAnd];
     
