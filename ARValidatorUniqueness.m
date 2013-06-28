@@ -22,9 +22,11 @@
     id aId = [aRecord valueForKey:@"id"];
     ARLazyFetcher *fetcher = [[ARLazyFetcher alloc] initWithRecord:NSClassFromString(recordName)];
     
-    ARWhereStatement * ignoreSameRecord = [ARWhereStatement whereField:@"id" ofRecord:[aRecord class] notEqualToValue: aId];
-    ARWhereStatement * ensureUniqueField = [ARWhereStatement whereField:aField ofRecord:[aRecord class] equalToValue: aValue];
-    ARWhereStatement *finalStatement = [ARWhereStatement concatenateStatement:ignoreSameRecord withStatement:ensureUniqueField useLogicalOperation:ARLogicalAnd];
+    ARWhereStatement *finalStatement = [ARWhereStatement whereField:aField ofRecord:[aRecord class] equalToValue: aValue];
+    if (aId) { //If it was insertion, have no id yet, it should consider only the column
+        ARWhereStatement *ignoreSameRecord = [ARWhereStatement whereField:@"id" ofRecord:[aRecord class] notEqualToValue: aId];
+        finalStatement = [ARWhereStatement concatenateStatement:ignoreSameRecord withStatement:finalStatement useLogicalOperation:ARLogicalAnd];
+    }
     
     [fetcher setWhereStatement:finalStatement];
     
